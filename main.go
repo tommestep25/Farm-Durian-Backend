@@ -24,10 +24,14 @@ r.Use(cors.New(cors.Config{
         AllowCredentials: true,
     }))
 
-	port := os.Getenv("PORT") // ดึงค่า Port ที่ Server กำหนดมาให้
+port := os.Getenv("PORT") 
     if port == "" {
-        port = "8080" // ถ้าไม่มี (เช่นรันในเครื่อง) ให้ใช้ 8080 เหมือนเดิม
+        port = "8080" // ค่าเริ่มต้นสำหรับรันในเครื่อง
     }
+
+    // 2. ต้องรันด้วยตัวแปร port และห้ามใส่ localhost เข้าไป
+    // ✅ แบบที่ถูกต้อง:
+    r.Run(":" + port)
 
 	// สร้าง API Route
 	api := r.Group("/api")
