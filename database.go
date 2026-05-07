@@ -15,7 +15,8 @@ func initDB() {
 
     // 2. ถ้าในเครื่องไม่มี DATABASE_URL (เช่นตอนรัน Local) ให้ใช้ค่าเดิมที่คุณมี
     if dsn == "" {
-        dsn = "postgres://postgres:%23Lovelove144@db.otnuuwigqsfpkrfdvgpj.supabase.co:5432/postgres"
+        dsn = "postgres://postgres.otnuuwigqsfpkrfdvgpj:Luckygamer144@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres"
+        // dsn = "postgres://postgres:Lovelove144@db.otnuuwigqsfpkrfdvgpj.supabase.co:5432/postgres"
     }
 	
 	
