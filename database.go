@@ -10,7 +10,12 @@ var db *sqlx.DB
 
 func initDB() {
 	// แทนที่บรรทัดด้านล่างด้วย Connection String ของคุณ
-	dsn := "postgres://postgres:%23Lovelove144@db.otnuuwigqsfpkrfdvgpj.supabase.co:5432/postgres"
+	dsn := os.Getenv("DATABASE_URL")
+
+    // 2. ถ้าในเครื่องไม่มี DATABASE_URL (เช่นตอนรัน Local) ให้ใช้ค่าเดิมที่คุณมี
+    if dsn == "" {
+        dsn = "postgres://postgres:%23Lovelove144@db.otnuuwigqsfpkrfdvgpj.supabase.co:5432/postgres"
+    }
 	
 	
 	var err error
