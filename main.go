@@ -2,6 +2,7 @@ package main
 
 import (
     "os"
+	"log"
     "github.com/gin-contrib/cors"
     "github.com/gin-gonic/gin"
 )
@@ -9,11 +10,11 @@ import (
 func main() {
     r := gin.Default()
 
-log.Println("🚀 [DEBUG] START APP") // ใช้ log.Println แทน
+println("🚀 [DEBUG] START APP") // ใช้ log.Println แทน
 
     initDB()
 
-    log.Println("✅ [DEBUG] DB CONNECTED")
+    println("✅ [DEBUG] DB CONNECTED")
     // 2. ตั้งค่า CORS
     r.Use(cors.New(cors.Config{
         AllowOrigins: []string{
