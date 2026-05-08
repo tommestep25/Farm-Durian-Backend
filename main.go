@@ -26,7 +26,7 @@ r.Use(cors.New(cors.Config{
 
 port := os.Getenv("PORT") 
     if port == "" {
-        port = "8080" // ค่าเริ่มต้นสำหรับรันในเครื่อง
+        port = "8080"
     }
 
     // 2. ต้องรันด้วยตัวแปร port และห้ามใส่ localhost เข้าไป
@@ -60,5 +60,5 @@ port := os.Getenv("PORT")
 	}
 
 	// รัน Server ที่ Port 8080
-	r.Run(":8080")
+	r.Run(":" + port)
 }
