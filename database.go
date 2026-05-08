@@ -12,15 +12,14 @@ var db *sqlx.DB
 func initDB() {
     dsn := os.Getenv("DATABASE_URL")
 
-    if dsn == "" {
-        // ใช้ Port 6543 และชื่อ Host แบบ Pooler พร้อมรหัสผ่านใหม่ของคุณ
-        // สังเกต: ชื่อ User ต้องมี .otnuuwigqsfpkrfdvgpj ต่อท้ายด้วยครับ
-        dsn = "postgres://postgres.otnuuwigqsfpkrfdvgpj:Luckygamer144@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres"
-    }
+if dsn == "" {
+    log.Fatal("DATABASE_URL not found")
+}
     
     var err error
     // ใช้ sqlx.Open แทน Connect เพื่อไม่ให้มันค้างตอนเริ่มต้น
     db, err = sqlx.Open("postgres", dsn)
+	log.Println("Database Test", db)
     if err != nil {
         log.Fatalln("❌ Database Open Error:", err)
     }
