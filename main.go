@@ -9,12 +9,11 @@ import (
 func main() {
     r := gin.Default()
 
-println("START APP")
+log.Println("🚀 [DEBUG] START APP") // ใช้ log.Println แทน
 
     initDB()
 
-    println("DB CONNECTED")
-
+    log.Println("✅ [DEBUG] DB CONNECTED")
     // 2. ตั้งค่า CORS
     r.Use(cors.New(cors.Config{
         AllowOrigins: []string{
