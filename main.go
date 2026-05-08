@@ -1,22 +1,12 @@
-package main
-
-import (
-    "os"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-)
-
 func main() {
-	r := gin.Default()
+    r := gin.Default()
 
-	// เรียกใช้งานฟังก์ชันเชื่อมต่อ DB ที่อยู่ใน database.go
-	initDB()
+    initDB()
 
-	// ตั้งค่า CORS ให้ละเอียดขึ้นเพื่อรองรับ PUT/DELETE ในอนาคต
-r.Use(cors.New(cors.Config{
+    r.Use(cors.New(cors.Config{
         AllowOrigins: []string{
-            "http://localhost:5173",          // สำหรับรันในเครื่องตัวเอง
-            "https://farm-durian.netlify.app", // URL หน้าเว็บจริงของคุณ
+            "http://localhost:5173",
+            "https://farm-durian.netlify.app",
         },
         AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
         AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
@@ -24,41 +14,29 @@ r.Use(cors.New(cors.Config{
         AllowCredentials: true,
     }))
 
-port := os.Getenv("PORT") 
+    // --- 1. เตรียมค่า Port (แค่ประกาศตัวแปร ห้ามสั่ง r.Run ตรงนี้!) ---
+    port := os.Getenv("PORT")
     if port == "" {
         port = "8080"
     }
 
-    // 2. ต้องรันด้วยตัวแปร port และห้ามใส่ localhost เข้าไป
-    // ✅ แบบที่ถูกต้อง:
+    // --- 2. สร้าง API Route (ต้องอยู่ก่อน r.Run) ---
+    api := r.Group("/api")
+    {
+        api.GET("/trees", getTrees)
+        api.POST("/trees", createTree)
+        api.GET("/dashboard/stats", getDashboardStats)
+        api.POST("/fertilizer", addFertilizer)
+        api.GET("/fertilizer/history", getFertilizerHistory)
+        api.GET("/fertilizer/inventory", getFertilizerInventory)
+        api.POST("/fertilizer/inventory", addFertilizerToInventory)
+        api.PUT("/fertilizer/inventory/:id", updateFertilizerStock)
+        api.POST("/pest-disease", addPestLog)
+        api.GET("/pest-disease/history", getPestHistory)
+        api.GET("/reports/summary", getReportSummary)
+        api.GET("/reports/monthly-usage", getMonthlyUsage)
+    }
+
+    // --- 3. สั่งรัน Server ไว้ที่บรรทัดสุดท้ายของฟังก์ชัน main เพียงที่เดียว! ---
     r.Run(":" + port)
-
-	// สร้าง API Route
-	api := r.Group("/api")
-	{
-		// --- 🌳 จัดการต้นไม้ & Dashboard ---
-		api.GET("/trees", getTrees)
-		api.POST("/trees", createTree)
-		api.GET("/dashboard/stats", getDashboardStats)
-
-		// --- 🧪 ระบบใส่ปุ๋ย (ประวัติการใช้งาน) ---
-		api.POST("/fertilizer", addFertilizer)
-		api.GET("/fertilizer/history", getFertilizerHistory)
-
-		// --- 📦 ระบบคลังปุ๋ย (ยี่ห้อ, ราคา, สต็อก) ---
-		api.GET("/fertilizer/inventory", getFertilizerInventory)    // ดูรายการปุ๋ยทั้งหมด
-		api.POST("/fertilizer/inventory", addFertilizerToInventory) // เพิ่มยี่ห้อปุ๋ยใหม่
-		api.PUT("/fertilizer/inventory/:id", updateFertilizerStock) // อัปเดตราคาหรือจำนวนสต็อก
-
-		// --- 🐛 โรค & แมลง ---
-		api.POST("/pest-disease", addPestLog)
-		api.GET("/pest-disease/history", getPestHistory)
-
-		// --- 📈 รายงานสรุป ---
-		api.GET("/reports/summary", getReportSummary)
-		api.GET("/reports/monthly-usage", getMonthlyUsage) // 🔥 เพิ่มสำหรับสรุปยอดรายเดือน (กี่กิโล/กี่บาท)
-	}
-
-	// รัน Server ที่ Port 8080
-	r.Run(":" + port)
 }
