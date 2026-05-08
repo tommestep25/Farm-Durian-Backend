@@ -10,25 +10,28 @@ import (
 var db *sqlx.DB
 
 func initDB() {
-	// แทนที่บรรทัดด้านล่างด้วย Connection String ของคุณ
-	dsn := os.Getenv("DATABASE_URL")
-log.Println("✅ [DEBUG] Database", dsn)
-    // 2. ถ้าในเครื่องไม่มี DATABASE_URL (เช่นตอนรัน Local) ให้ใช้ค่าเดิมที่คุณมี
+    // dsn := os.Getenv("DATABASE_URL")
+	dsn == ""
     if dsn == "" {
-        dsn = "postgres://postgres:Luckygamer144@15.229.45.211:5432/postgres"
-        // dsn = "postgres://postgres:Lovelove144@db.otnuuwigqsfpkrfdvgpj.supabase.co:5432/postgres"
+        // ใช้ Port 6543 และชื่อ Host แบบ Pooler พร้อมรหัสผ่านใหม่ของคุณ
+        // สังเกต: ชื่อ User ต้องมี .otnuuwigqsfpkrfdvgpj ต่อท้ายด้วยครับ
+        dsn = "postgres://postgres.otnuuwigqsfpkrfdvgpj:Luckygamer144@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres"
     }
-	
-	
-	var err error
-	db, err = sqlx.Connect("postgres", dsn)
-	if err != nil {
-		log.Fatalln("❌ เชื่อมต่อ Database ล้มเหลว:", err)
-	}
+    
+    var err error
+    // ใช้ sqlx.Open แทน Connect เพื่อไม่ให้มันค้างตอนเริ่มต้น
+    db, err = sqlx.Open("postgres", dsn)
+    if err != nil {
+        log.Fatalln("❌ Database Open Error:", err)
+    }
 
-	if err = db.Ping(); err != nil {
-		log.Fatalln("❌ Database ไม่ตอบสนอง:", err)
-	}
+    // ตั้งค่าเวลาเชื่อมต่อให้ไม่รอนานเกินไป
+    db.SetMaxOpenConns(10)
+    
+    // ลอง Ping ดูว่าใช้ได้จริงไหม
+    if err = db.Ping(); err != nil {
+        log.Fatalln("❌ Database Ping Error (ต่อไม่ได้):", err)
+    }
 
-	log.Println("✅ เชื่อมต่อ PostgreSQL (Supabase) สำเร็จ!")
+    log.Println("✅ เชื่อมต่อ PostgreSQL (Supabase) สำเร็จ!")
 }
