@@ -9,8 +9,11 @@ import (
 func main() {
     r := gin.Default()
 
-    // 1. เชื่อมต่อ Database (ฟังก์ชันจาก database.go)
+println("START APP")
+
     initDB()
+
+    println("DB CONNECTED")
 
     // 2. ตั้งค่า CORS
     r.Use(cors.New(cors.Config{
