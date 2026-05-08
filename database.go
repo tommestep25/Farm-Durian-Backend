@@ -10,8 +10,8 @@ import (
 var db *sqlx.DB
 
 func initDB() {
-    // dsn := os.Getenv("DATABASE_URL")
-	dsn == ""
+    dsn := os.Getenv("DATABASE_URLS")
+
     if dsn == "" {
         // ใช้ Port 6543 และชื่อ Host แบบ Pooler พร้อมรหัสผ่านใหม่ของคุณ
         // สังเกต: ชื่อ User ต้องมี .otnuuwigqsfpkrfdvgpj ต่อท้ายด้วยครับ
