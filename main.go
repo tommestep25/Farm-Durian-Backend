@@ -1,8 +1,18 @@
+package main
+
+import (
+    "os"
+    "github.com/gin-contrib/cors"
+    "github.com/gin-gonic/gin"
+)
+
 func main() {
     r := gin.Default()
 
+    // 1. เชื่อมต่อ Database (ฟังก์ชันจาก database.go)
     initDB()
 
+    // 2. ตั้งค่า CORS
     r.Use(cors.New(cors.Config{
         AllowOrigins: []string{
             "http://localhost:5173",
@@ -14,13 +24,7 @@ func main() {
         AllowCredentials: true,
     }))
 
-    // --- 1. เตรียมค่า Port (แค่ประกาศตัวแปร ห้ามสั่ง r.Run ตรงนี้!) ---
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "8080"
-    }
-
-    // --- 2. สร้าง API Route (ต้องอยู่ก่อน r.Run) ---
+    // 3. สร้าง API Route (ต้องประกาศให้เสร็จก่อนสั่ง Run)
     api := r.Group("/api")
     {
         api.GET("/trees", getTrees)
@@ -37,6 +41,12 @@ func main() {
         api.GET("/reports/monthly-usage", getMonthlyUsage)
     }
 
-    // --- 3. สั่งรัน Server ไว้ที่บรรทัดสุดท้ายของฟังก์ชัน main เพียงที่เดียว! ---
+    // 4. เตรียมค่า Port
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+
+    // 5. สั่งรัน Server ไว้ที่บรรทัดสุดท้ายเพียงที่เดียว
     r.Run(":" + port)
 }
